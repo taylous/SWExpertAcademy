@@ -1,0 +1,22 @@
+6
+3 3
+ssng
+snfgng
+ggnngg
+2 2
+sdsdsdsdf
+sf
+3 3
+pnb
+dfe
+qwx
+1 1
+b
+2 21
+bcdfghjklmnpqrstvwxyz
+cdfghjklmnpqrstvwxyzb
+4 2
+ababbabaaaaa
+abbabaababa
+a
+b
