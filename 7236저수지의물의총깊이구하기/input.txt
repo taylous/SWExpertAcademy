@@ -1,0 +1,18 @@
+3
+6
+G W G G W W
+G W G G W G
+W W W W G W
+W G W W W G
+G W W W W G
+G W W G W G
+5
+G W G G W
+G W G G W
+W W W W G
+W G W W W
+G W W W W
+3
+G G W
+G W W
+W W W
