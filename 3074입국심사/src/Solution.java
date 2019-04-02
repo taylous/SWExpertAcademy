@@ -1,64 +1,59 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Collections;
-import java.util.LinkedList;
+import java.util.Arrays;
 import java.util.StringTokenizer;
-
-class Examination implements Comparable<Examination> {
-
-	int judgingTime;
-	int remainTime;
-
-	Examination() {}
-	Examination(int judgingTime) {
-
-		this.judgingTime = judgingTime;
-		this.remainTime = 0;
-	}
-
-	@Override
-	public int compareTo(Examination other) {
-		return (this.remainTime + this.judgingTime) > (other.remainTime + other.judgingTime) ? 1 : -1;
-	}
-}
 
 public class Solution {
 
-	static LinkedList<Examination> examinations = new LinkedList<>();
-
-	static int Awaiter;
+	static long[] examination;
+	
+	static long Answer;
 	static int N;
-
-	public static void main(String args[]) throws Exception	{
-
+	static int M;
+	
+	public static void main(String[] args) throws IOException {
+		
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = null;
-
+		StringTokenizer st;
+		long left, right, mid, boundary;
+		
 		int T = Integer.parseInt(br.readLine());
 		for(int test_case = 0; test_case < T; test_case++) {
-
-			st = new StringTokenizer(br.readLine(), " ");
-
+			
+			st = new StringTokenizer(br.readLine());
+			
 			N = Integer.parseInt(st.nextToken());
-			Awaiter = Integer.parseInt(st.nextToken());
-
+			M = Integer.parseInt(st.nextToken());
+			Answer = Long.MAX_VALUE;
+			
+			examination = new long[N];
+			
 			for(int i = 0; i < N; i++)
-				examinations.add(new Examination(Integer.parseInt(br.readLine())));
-			Immigration();
-
-			System.out.println("#"+(test_case+1) + " " + examinations.get(0).remainTime);
-			examinations.clear();
+				examination[i] = Long.parseLong(br.readLine());
+			Arrays.sort(examination);
+			
+			left = 0;
+			right = examination[N - 1] * M;
+			
+			while(left <= right) {
+				
+				mid = (left + right) / 2;
+				boundary = 0;
+				
+				for(int i = 0; i < N; i++)
+					boundary += (mid / examination[i]);
+				
+				if(boundary >= M) {
+					
+					right = mid - 1;
+					Answer = Math.min(Answer, mid);
+				}
+				else
+					left = mid + 1;
+			}
+			System.out.println("#"+(test_case+1)+" "+Answer);
 		}
-
 		br.close();
-	}
-
-	static void Immigration() {
-
-		while(Awaiter-- > 0) {
-
-			Collections.sort(examinations);
-			examinations.get(0).remainTime += examinations.get(0).judgingTime;
-		}
 	}
 }
