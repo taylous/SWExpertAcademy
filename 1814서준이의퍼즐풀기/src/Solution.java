@@ -1,92 +1,110 @@
 import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.StringTokenizer;
+
+class Location implements Comparable<Location> {
+
+    int position;
+    int required;
+
+    public Location(int position, int required) {
+        this.position = position;
+        this.required = required;
+    }
+
+    @Override
+    public int compareTo(Location other) {
+
+        if(this.required < other.required)
+            return 1;
+        else if(this.required > other.required)
+            return -1;
+        else {
+
+            if(this.position < other.position)
+                return 1;
+            else if(this.position > other.position)
+                return -1;
+        }
+        return 1;
+    }
+}
 
 public class Solution {
 
-    static int[] rowBoundary;
-    static int[] colBoundary;
+    static ArrayList<Location> locationR = new ArrayList<>();
+    static ArrayList<Location> locationC = new ArrayList<>();
 
-	static int Answer;
+    static int[] requiredValueR;
+    static int[] requiredValueC;
+    static int[] requiredValueS;
+
 	static int N;
 	
-	public static void main(String args[]) throws Exception	{
+	public static void main(String[] args) throws Exception	{
 		
-		//BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		BufferedReader br = new BufferedReader(new FileReader("1814서준이의퍼즐풀기\\input.txt"));
-		StringTokenizer st = null;
-		//boolean[][] puzzle;
-		
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//		BufferedReader br = new BufferedReader(new FileReader("1814서준이의퍼즐풀기\\input.txt"));
+        StringTokenizer st;
+        int value;
+
 		int T = Integer.parseInt(br.readLine());
 		for(int test_case = 0; test_case < T; test_case++) {
 
-			N = Integer.parseInt(br.readLine());
-			//puzzle = new boolean[N + 1][N + 1];
-			rowBoundary = new int[N + 1];
-			colBoundary = new int[N + 1];
+		    N = Integer.parseInt(br.readLine());
 
-			st = new StringTokenizer(br.readLine(), " ");
-			for(int i = 0; i < N; i++)
-                rowBoundary[i] = Integer.parseInt(st.nextToken());
+            requiredValueR = new int[N];
+		    requiredValueC = new int[N];
+            requiredValueS = new int[N];
 
-			st = new StringTokenizer(br.readLine(), " ");
-            for(int i = 0; i < N; i++)
-                colBoundary[i] = Integer.parseInt(st.nextToken());
-            SolveThePuzzleOfSeoJun(0, 0);
+            st = new StringTokenizer(br.readLine());
 
-            System.out.println("#"+(test_case+1) + " " + Answer);
-            Answer = 0;
+            for(int i = 0; i < N; i++) {
+
+                value = Integer.parseInt(st.nextToken());
+                requiredValueR[i] = value;
+                locationR.add(new Location(i, value));
+            }
+
+            st = new StringTokenizer(br.readLine());
+
+            for(int i = 0; i < N; i++) {
+
+                value = Integer.parseInt(st.nextToken());
+                requiredValueC[i] = value;
+                locationC.add(new Location(i, value));
+            }
+            Collections.sort(locationR);
+            Collections.sort(locationC);
+			System.out.println("#"+(test_case+1) + " " + (seoJoonsPuzzle() ? "Yes" : "No"));
+
+			locationR.clear();
+			locationC.clear();
 		}
-		
 		br.close();
 	}
 
-	static void SolveThePuzzleOfSeoJun(int rowIdx, int colIdx) {
+	static boolean seoJoonsPuzzle() {
 
-	    if(rowIdx >= N) {
+	    int required, criteria;
 
-	        if(Answer == 0) {
-                for (int i = 0; i < N; i++)
-                    if (colBoundary[i] != 0)
-                        return;
-                Answer = 1;
-            }
-            else {
+	    for(Location location : locationR) {
 
-                Answer++;
-            }
+	        required = location.required;
+	        criteria = 0;
+	        for(Location obj : locationC) {
 
-            return;
-        }
+	            if(requiredValueS[obj.position] < requiredValueC[obj.position]) {
 
-        if(rowBoundary[rowIdx] == 0) {
-            SolveThePuzzleOfSeoJun(rowIdx + 1, colIdx);
-        }
-	    else {
-
-	        int temp = rowBoundary[rowIdx];
-	        int count = 0;
-
-            for (int col = 0; col < N; col++) {
-
-                if(rowBoundary[rowIdx] == 0) {
-                    SolveThePuzzleOfSeoJun(rowIdx + 1, colIdx = 0);
-                }
-                else if(colBoundary[col] == 0) {
-                    continue;
-                }
-                else {
-
-                    rowBoundary[rowIdx]--;
-                    colBoundary[colIdx]--;
-                    SolveThePuzzleOfSeoJun(rowIdx, colIdx + 1);
-                    colBoundary[colIdx]++;
-                    rowBoundary[rowIdx]++;
+                    requiredValueS[obj.position]++;
+                    criteria++;
                 }
             }
+	        if(criteria != required)
+	            return false;
         }
+	    return true;
     }
 }
